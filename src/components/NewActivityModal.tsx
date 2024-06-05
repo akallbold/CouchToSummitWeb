@@ -20,6 +20,7 @@ function NewActivityModal({
   const { saveNewActivity, editActivity } = useActivities();
 
   const handleSave = () => {
+    // make it so these are the same...add if new, edit if existing!
     if (activityToBeEdited) {
       editActivity({ editedActivity: newActivity });
     } else {
@@ -27,7 +28,7 @@ function NewActivityModal({
     }
     setNewActivityModalOpen(false);
   };
-
+  console.log('Modal!');
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">

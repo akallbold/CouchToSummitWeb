@@ -35,7 +35,6 @@ const useActivities = () => {
     const { name, date, time } = newActivity;
     // get some sort of ID from the user - i think this will be saved by us separate of google auth
     console.log('in hook', { activities });
-    // make sure timestamp gets generated automatically
     console.log({ activityId, name, date, time, user });
     try {
       const res = await setDoc(doc(db, 'activities', activityId), {
@@ -43,7 +42,9 @@ const useActivities = () => {
         time,
         date,
         createdAt: Timestamp.now(),
-        user: '12345',
+        // user: '12345',
+        user: user.email,
+        dateDeleted: null,
       });
       console.log({ res });
       getActivities();
@@ -57,7 +58,7 @@ const useActivities = () => {
   const deleteActivity = async ({ activityId }) => {
     setLoadingActivities(true);
     await setDoc(doc(db, 'activities', activityId), {
-      deletedAt: Timestamp.now(),
+      dateDeleted: Timestamp.now(),
     });
     setLoadingActivities(false);
   };
@@ -83,7 +84,7 @@ const useActivities = () => {
 
     const q = query(
       collection(db, 'activities'),
-      where('deletedAt', '==', null),
+      where('dateDeleted', '==', null),
       // Uncomment and modify this line with the correct user ID
       // where('user', '==', '123'),
       orderBy('createdAt', 'desc'),

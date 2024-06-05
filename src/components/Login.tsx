@@ -2,49 +2,95 @@ import React, { useState } from 'react';
 import useAI from '../hooks/useAI';
 import {
   createUserWithEmailAndPassword,
-  // signInWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+  onAuthStateChanged,
+  browserSessionPersistence,
+  browserLocalPersistence,
+  setPersistence,
 } from 'firebase/auth';
 import { auth } from '../utils/firebase';
-// import { ui } from 'src/utils/firebaseUi';
-// import { StyledFirebaseAuth } from 'react-firebaseui';
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-// import { uiConfig } from 'src/utils/firebaseUi';
+import useAuthentication from 'src/hooks/useAuthentication';
+
 const Login = () => {
   const { tiredOfAI } = useAI();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { setUser, setIsAuthenticated, setLoadingAuthentication } =
+    useAuthentication();
 
-  createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      // Signed up
-      const user = userCredential.user;
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    try {
+      setLoadingAuthentication(true);
+      setPersistence(auth, browserSessionPersistence);
+      // setPersistence(auth, browserLocalPersistence)
+
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+      console.log('Signed up:', userCredential.user);
+      setUser(userCredential.user);
+      setIsAuthenticated(true);
+    } catch (error) {
+      console.error('Error signing up:', error.message);
+    } finally {
+      setLoadingAuthentication(false);
+    }
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      setLoadingAuthentication(true);
+      setPersistence(auth, browserSessionPersistence);
+
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+      console.log('Signed in:', userCredential.user);
+    } catch (error) {
+      console.error('Error signing in:', error.message);
+    } finally {
+      setLoadingAuthentication(false);
+    }
+  };
+  const handlePasswordReset = async (e) => {
+    e.preventDefault();
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        // Password reset email sent!
+        // do a toaster or something one day
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // ..
+      });
+  };
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // User is signed in, see docs for a list of available properties
+      // https://firebase.google.com/docs/reference/js/auth.user
+      const uid = user.uid;
+      setUser(user);
+      setIsAuthenticated(true);
       // ...
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      // ..
-    });
-
-  // signInWithEmailAndPassword(auth, email, password)
-  //   .then(() => {
-  //     console.log('is this function being triggered');
-  //   })
-  //   .then((userCredential) => {
-  //     // Signed in
-  //     const user = userCredential.user;
-  //     // ...
-  //   })
-  //   .catch((error) => {
-  //     const errorCode = error.code;
-  //     const errorMessage = error.message;
-  //   });
+    } else {
+      // User is signed out
+      // ...
+      setIsAuthenticated(false);
+    }
+  });
 
   return (
     <div className="bg-gradient-to-b from-skyBlue to-waterBlue h-screen flex items-center justify-center">
       <div className="relative w-full h-full flex items-center justify-center">
-        {/* Mountain Range */}
         {tiredOfAI ? (
           <div className="absolute inset-x-0 bottom-0 h-1/2 flex justify-center items-end">
             <div className="mountain w-1/3 h-full bg-mountainGray"></div>
@@ -55,7 +101,6 @@ const Login = () => {
           <div className=""></div>
         )}
 
-        {/* Login Form */}
         <div className="relative z-10 bg-white p-8 rounded-lg shadow-lg w-96">
           <h2 className="text-3xl font-bold mb-4 text-forestGreen">Login</h2>
           <form>
@@ -71,6 +116,8 @@ const Login = () => {
                 type="email"
                 id="email"
                 placeholder="Enter your email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
               />
             </div>
             <div className="mb-4">
@@ -82,16 +129,29 @@ const Login = () => {
                 type="password"
                 id="password"
                 placeholder="Enter your password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
               />
             </div>
-            {/* <StyledFirebaseAuth
-              uiConfig={uiConfig}
-          firebaseAuth={firebase.auth()}
-            /> */}
-
-            <button className="w-full bg-forestGreen text-coolWhite py-2 rounded hover:bg-leafyGreen">
+            <button
+              className="w-full bg-forestGreen text-coolWhite py-2 rounded hover:bg-leafyGreen"
+              onClick={handleLogin}
+            >
               Login
             </button>
+            <button
+              className="w-full bg-forestGreen text-coolWhite py-2 rounded hover:bg-leafyGreen mt-2"
+              onClick={handleSignUp}
+            >
+              Sign Up
+            </button>
+            <div
+              onClick={() => {
+                handlePasswordReset;
+              }}
+            >
+              <p>Reset Password</p>
+            </div>
           </form>
         </div>
       </div>

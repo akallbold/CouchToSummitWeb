@@ -3,14 +3,15 @@ import { getAnalytics, isSupported } from 'firebase/analytics';
 import { enableIndexedDbPersistence, getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
+console.log('in config', process.env.REACT_APP_FIREBASE_API_KEY);
 const firebaseConfig = {
-  apiKey: 'AIzaSyCwiMCXw87Y7ZnH0udr_VO4S-CDlJV1_ew',
-  authDomain: 'couchtosummit-ae27c.firebaseapp.com',
-  projectId: 'couchtosummit-ae27c',
-  storageBucket: 'couchtosummit-ae27c.appspot.com',
-  messagingSenderId: '349620181168',
-  appId: '1:349620181168:web:d53c7e765edac5aba24375',
-  measurementId: 'G-XEJZ5JJP5B',
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
 let app;
 let db;
@@ -19,7 +20,7 @@ let auth;
 if (!app) {
   app = initializeApp(firebaseConfig);
   db = getFirestore(app);
-  // auth = getAuth(app);
+  auth = getAuth(app);
 
   isSupported().then((supported) => {
     if (supported) {
