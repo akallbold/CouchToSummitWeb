@@ -3,7 +3,6 @@ import { getAnalytics, isSupported } from 'firebase/analytics';
 import { enableIndexedDbPersistence, getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
-console.log('in config', process.env.REACT_APP_FIREBASE_API_KEY);
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,

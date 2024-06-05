@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   File,
-  Home as HomeIcon,
+  Home,
   LineChart,
   ListFilter,
   MoreHorizontal,
@@ -63,22 +63,12 @@ import { Link } from 'react-router-dom';
 import '../App.css';
 import useActivities from '../hooks/useActivities';
 import { ActivityObject } from 'src/utils/types';
-import ActivityDialog from './ActivityDialog';
+import NewActivityModal from './Delete-NewActivityModal';
 import useAuthentication from 'src/hooks/useAuthentication';
 import { ResponsiveDialog } from './shad-ui/ui/responsive-dialog';
 import { ProgressCard } from './ProgressCard';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from './shad-ui/ui/dialog';
-import { Label } from './shad-ui/ui/label';
 
-const Home = () => {
+export function Dashboard() {
   const [newActivityModalOpen, setNewActivityModalOpen] =
     useState<boolean>(false);
   const [editActivityModalOpen, setEditActivityModalOpen] =
@@ -131,7 +121,7 @@ const Home = () => {
                   href="#"
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
-                  <HomeIcon className="h-5 w-5" />
+                  <Home className="h-5 w-5" />
                   <span className="sr-only">Dashboard</span>
                 </Link>
               </TooltipTrigger>
@@ -234,7 +224,7 @@ const Home = () => {
                   href="#"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
-                  <HomeIcon className="h-5 w-5" />
+                  <Home className="h-5 w-5" />
                   Dashboard
                 </Link>
                 <Link
@@ -268,7 +258,25 @@ const Home = () => {
               </nav>
             </SheetContent>
           </Sheet>
-
+          {/* <Breadcrumb className="hidden md:flex">
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link href="#">Dashboard</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link href="#">Products</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>All Products</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb> */}
           <div className="relative ml-auto flex-1 md:grow-0">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
@@ -297,7 +305,7 @@ const Home = () => {
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Feedback</DropdownMenuItem>
+              <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>Logout</DropdownMenuItem>
             </DropdownMenuContent>
@@ -342,7 +350,7 @@ const Home = () => {
                     Export
                   </span>
                 </Button>
-                {/* <Button
+                <Button
                   size="sm"
                   className="h-8 gap-1"
                   onClick={() => setNewActivityModalOpen(true)}
@@ -351,10 +359,11 @@ const Home = () => {
                   <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                     Add Activity
                   </span>
-                </Button> */}
-                <ActivityDialog
-                  setNewActivityModalOpen={setNewActivityModalOpen}
-                />
+                </Button>
+                {/* <ResponsiveDialog
+                  open={newActivityModalOpen}
+                  setOpen={setNewActivityModalOpen}
+                /> */}
               </div>
             </div>
             <TabsContent value="all">
@@ -467,6 +476,4 @@ const Home = () => {
       </div>
     </div>
   );
-};
-
-export default Home;
+}

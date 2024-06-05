@@ -11,6 +11,19 @@ import {
 } from 'firebase/auth';
 import { auth } from '../utils/firebase';
 import useAuthentication from 'src/hooks/useAuthentication';
+import { Alert } from './shad-ui/ui/alert';
+import { Button } from '../components/shad-ui/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '../components/shad-ui/ui/card';
+import { Input } from '../components/shad-ui/ui/input';
+import { Label } from '../components/shad-ui/ui/label';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
   const { tiredOfAI } = useAI();
@@ -18,11 +31,13 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const { setUser, setIsAuthenticated, setLoadingAuthentication } =
     useAuthentication();
+  const [alert, setAlert] = useState({ show: false, message: '' });
 
   const handleSignUp = async (e) => {
     e.preventDefault();
     try {
       setLoadingAuthentication(true);
+      setAlert({ show: true, message: 'Signing you up...' });
       setPersistence(auth, browserSessionPersistence);
       // setPersistence(auth, browserLocalPersistence)
 
@@ -31,11 +46,12 @@ const Login = () => {
         email,
         password,
       );
-      console.log('Signed up:', userCredential.user);
+      setAlert({ show: true, message: 'Signed up successfully!' });
       setUser(userCredential.user);
       setIsAuthenticated(true);
     } catch (error) {
       console.error('Error signing up:', error.message);
+      setAlert({ show: true, message: 'Error with signup' });
     } finally {
       setLoadingAuthentication(false);
     }
@@ -45,6 +61,8 @@ const Login = () => {
     e.preventDefault();
     try {
       setLoadingAuthentication(true);
+      setAlert({ show: true, message: 'Logging you in...' });
+
       setPersistence(auth, browserSessionPersistence);
 
       const userCredential = await signInWithEmailAndPassword(
@@ -53,14 +71,17 @@ const Login = () => {
         password,
       );
       console.log('Signed in:', userCredential.user);
+      setAlert({ show: true, message: 'Login successful!' });
     } catch (error) {
       console.error('Error signing in:', error.message);
+      setAlert({ show: true, message: 'Error with login' });
     } finally {
       setLoadingAuthentication(false);
     }
   };
   const handlePasswordReset = async (e) => {
     e.preventDefault();
+    setAlert({ show: true, message: 'Check your email for password reset' });
     sendPasswordResetEmail(auth, email)
       .then(() => {
         // Password reset email sent!
@@ -89,71 +110,60 @@ const Login = () => {
   });
 
   return (
-    <div className="bg-gradient-to-b from-skyBlue to-waterBlue h-screen flex items-center justify-center">
-      <div className="relative w-full h-full flex items-center justify-center">
-        {tiredOfAI ? (
-          <div className="absolute inset-x-0 bottom-0 h-1/2 flex justify-center items-end">
-            <div className="mountain w-1/3 h-full bg-mountainGray"></div>
-            <div className="mountain w-1/4 h-3/4 bg-forestGreen"></div>
-            <div className="mountain w-1/3 h-full bg-earthyBrown"></div>
+    <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
+      <div className="flex items-center justify-center py-12">
+        <div className="mx-auto grid w-[350px] gap-6">
+          <div className="grid gap-2 text-center">
+            <h1 className="text-3xl font-bold">Login</h1>
+            <p className="text-balance text-muted-foreground">
+              Enter your email below to login to your account
+            </p>
           </div>
-        ) : (
-          <div className=""></div>
-        )}
-
-        <div className="relative z-10 bg-white p-8 rounded-lg shadow-lg w-96">
-          <h2 className="text-3xl font-bold mb-4 text-forestGreen">Login</h2>
-          <form>
-            <div className="mb-4">
-              <label className="block text-gray-700 mb-2" htmlFor="email">
-                New to the app? Sign up!
-              </label>
-              <label className="block text-gray-700 mb-2" htmlFor="email">
-                Email
-              </label>
-              <input
-                className="w-full px-3 py-2 border rounded"
-                type="email"
+          <div className="grid gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
                 id="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
+                type="email"
+                placeholder="m@example.com"
+                required
               />
             </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 mb-2" htmlFor="password">
-                Password
-              </label>
-              <input
-                className="w-full px-3 py-2 border rounded"
-                type="password"
-                id="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-              />
+            <div className="grid gap-2">
+              <div className="flex items-center">
+                <Label htmlFor="password">Password</Label>
+                <Link
+                  href="/forgot-password"
+                  className="ml-auto inline-block text-sm underline"
+                >
+                  Forgot your password?
+                </Link>
+              </div>
+              <Input id="password" type="password" required />
             </div>
-            <button
-              className="w-full bg-forestGreen text-coolWhite py-2 rounded hover:bg-leafyGreen"
-              onClick={handleLogin}
-            >
+            <Button type="submit" className="w-full">
               Login
-            </button>
-            <button
-              className="w-full bg-forestGreen text-coolWhite py-2 rounded hover:bg-leafyGreen mt-2"
-              onClick={handleSignUp}
-            >
-              Sign Up
-            </button>
-            <div
-              onClick={() => {
-                handlePasswordReset;
-              }}
-            >
-              <p>Reset Password</p>
-            </div>
-          </form>
+            </Button>
+            <Button variant="outline" className="w-full">
+              Login with Google
+            </Button>
+          </div>
+          <div className="mt-4 text-center text-sm">
+            Don&apos;t have an account?{' '}
+            <Link href="#" className="underline">
+              Sign up
+            </Link>
+          </div>
         </div>
+      </div>
+      <div className="hidden bg-muted lg:block">
+        <img
+          src="/placeholder.svg"
+          alt="Image"
+          width="1920"
+          height="1080"
+          className="h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+        />
       </div>
     </div>
   );

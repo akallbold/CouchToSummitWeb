@@ -2,7 +2,19 @@ export interface ActivityObject {
   date: string;
   id: string;
   name: string;
-  time: string;
+  time?: string;
+  packWeight?: number;
+  elevation?: number;
+  distance?: number;
+  stairs?: number;
+  createdAt: any;
+  status: string;
+}
+
+export interface ProgressObject {
+  totalActivities: number;
+  totalElevation: number;
+  totalDistance: number;
 }
 
 export interface GoogleUserObject {

@@ -2,6 +2,7 @@ import React, { useState, Dispatch, SetStateAction } from 'react';
 import '../App.css';
 import useActivities from '../hooks/useActivities';
 import { ActivityObject } from 'src/utils/types';
+import { ComboboxDemo } from './shad-ui/ui/combo-box';
 
 interface NewActivityModalProps {
   setNewActivityModalOpen: Dispatch<SetStateAction<boolean>>;
@@ -29,6 +30,7 @@ function NewActivityModal({
     setNewActivityModalOpen(false);
   };
   console.log('Modal!');
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
@@ -47,6 +49,7 @@ function NewActivityModal({
             }
             value={newActivity.name}
           />
+          <ComboboxDemo />
           <label htmlFor="date">Date</label>
           <input
             id="date"

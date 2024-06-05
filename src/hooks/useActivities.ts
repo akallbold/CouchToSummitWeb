@@ -1,6 +1,6 @@
 // src/hooks/useAuth.js
 import { useEffect, useState } from 'react';
-import { ActivityObject } from 'src/utils/types';
+import { ActivityObject, ProgressObject } from 'src/utils/types';
 import {
   doc,
   setDoc,
@@ -16,25 +16,36 @@ import {
 } from 'firebase/firestore';
 import { db } from 'src/utils/firebase';
 import useAuthentication from './useAuthentication';
-import { v4 as uuidv4 } from 'uuid';
-
-const idGenerator = (prefix: string) => {
-  return `${prefix}-${uuidv4()}`;
-};
+import { idGenerator } from '../utils/utils';
 
 const useActivities = () => {
   const [activities, setActivities] = useState<ActivityObject[]>([]);
+  const [totalProgress, setTotalProgress] = useState<ProgressObject>(null);
   const [loadingActivities, setLoadingActivities] = useState<boolean>(false);
   const { user } = useAuthentication();
   // upsert - create if new, edit if existing
+  useEffect(() => {
+    if (activities.length) {
+      const totalElevation = activities.reduce((acc, curr) => {
+        return acc + curr.elevation;
+      }, 0);
+      const totalDistance = activities.reduce((acc, curr) => {
+        return acc + curr.distance;
+      }, 0);
+      setTotalProgress({
+        totalActivities: activities.length,
+        totalElevation,
+        totalDistance,
+      });
+    }
+  }, [activities]);
+
   const saveNewActivity = async ({ newActivity }) => {
     setLoadingActivities(true);
-    console.log({ newActivity });
     // check for existing ID
     const activityId = idGenerator('activity');
     const { name, date, time } = newActivity;
-    // get some sort of ID from the user - i think this will be saved by us separate of google auth
-    console.log('in hook', { activities });
+
     console.log({ activityId, name, date, time, user });
     try {
       const res = await setDoc(doc(db, 'activities', activityId), {
@@ -44,7 +55,7 @@ const useActivities = () => {
         createdAt: Timestamp.now(),
         // user: '12345',
         user: user.email,
-        dateDeleted: null,
+        deletedAt: null,
       });
       console.log({ res });
       getActivities();
@@ -58,7 +69,7 @@ const useActivities = () => {
   const deleteActivity = async ({ activityId }) => {
     setLoadingActivities(true);
     await setDoc(doc(db, 'activities', activityId), {
-      dateDeleted: Timestamp.now(),
+      deletedAt: Timestamp.now(),
     });
     setLoadingActivities(false);
   };
@@ -79,14 +90,12 @@ const useActivities = () => {
   };
 
   const getActivities = async () => {
-    console.log('Fetching activities...');
     setLoadingActivities(true);
 
     const q = query(
       collection(db, 'activities'),
-      where('dateDeleted', '==', null),
-      // Uncomment and modify this line with the correct user ID
-      // where('user', '==', '123'),
+      where('deletedAt', '==', null),
+      where('user', '==', 'a.kallenbornbolden@gmail.com'),
       orderBy('createdAt', 'desc'),
       limit(30),
     );
