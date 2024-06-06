@@ -72,6 +72,7 @@ export interface RawHikeObject {
   profile_photo_url: string;
   snow?: boolean;
 }
+
 export interface HikeObject {
   id: string;
   cityName: string;
@@ -86,14 +87,21 @@ export interface HikeObject {
   snow?: boolean;
 }
 
+export interface RawStairObject {
+  OBJECTID: number;
+  UNITDESC_ASSET: string;
+  STAIRWAYLENGTH: number;
+  STAIRWAYWIDTH: number;
+  Shape__Length: number;
+}
+
 export interface StairObject {
-  _geoloc: GeoObject;
-  city_name: string;
-  difficulty_rating: string;
-  elevation_gain: number;
-  length: number;
-  name: string;
-  objectID: string;
-  popularity: number;
-  profile_photo_url: string;
+  address: string;
+  elevation: number;
+  id: string;
+  objectId: string;
+  numberOfStairs: number;
+  Shape__Length: number;
+  STAIRWAYLENGTH: number;
+  STAIRWAYWIDTH: number;
 }

@@ -1,18 +1,10 @@
 // src/hooks/useAuth.js
 import { useEffect, useState } from 'react';
-import {
-  ActivityObject,
-  HikeObject,
-  ProgressObject,
-  RawHikeObject,
-  StairObject,
-} from 'src/utils/types';
+import { HikeObject, StairObject } from 'src/utils/types';
 import {
   doc,
   setDoc,
   Timestamp,
-  updateDoc,
-  serverTimestamp,
   collection,
   query,
   where,
@@ -23,6 +15,7 @@ import {
 import { db } from 'src/utils/firebase';
 import { idGenerator } from '../utils/utils';
 import testData from 'src/data/test-WA.json';
+import testStairData from 'src/data/testStairs.json';
 
 const useHikeAndStairData = () => {
   const [hikes, setHikes] = useState<HikeObject[]>([]);
@@ -30,12 +23,14 @@ const useHikeAndStairData = () => {
   const [loadingHikes, setLoadingHikes] = useState<boolean>(false);
   const [loadingStairs, setLoadingStairs] = useState<boolean>(false);
 
-  const uploadDataToFirestore = async () => {
+  const uploadHikeDataToFirestore = async () => {
     setLoadingHikes(true);
     testData.forEach(async (data) => {
+      const id = idGenerator('hike');
       try {
-        const res = await setDoc(doc(db, 'hike', data.objectID), {
-          id: data.objectID,
+        const res = await setDoc(doc(db, 'hike', id), {
+          id,
+          objectId: data.objectID,
           name: data.name,
           popularity: data.popularity,
           geoLocation: data._geoloc,
@@ -56,7 +51,40 @@ const useHikeAndStairData = () => {
       }
     });
   };
-  // uploadDataToFirestore();
+  const uploadStairDataToFirestore = async () => {
+    setLoadingStairs(true);
+    const id = idGenerator('stair');
+    testStairData.forEach(async (data) => {
+      try {
+        const stringObjectId = data.OBJECTID.toString();
+        const res = await setDoc(doc(db, 'stair', id), {
+          id,
+          name: '',
+          address: data.UNITDESC_ASSET,
+          elevation: 0,
+          objectId: data.OBJECTID,
+          length: data.STAIRWAYLENGTH,
+          STAIRWAYWIDTH: data.STAIRWAYWIDTH,
+          numberOfStairs: 0,
+          Shape__Length: data.Shape__Length,
+          STAIRWAYLENGTH: data.STAIRWAYLENGTH,
+          createdAt: Timestamp.now(),
+          deletedAt: null,
+          createdBy: 'system',
+        });
+        console.log({ res });
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoadingStairs(false);
+      }
+    });
+  };
+  useEffect(() => {
+    // only do this once to seed db.
+    uploadStairDataToFirestore();
+    uploadHikeDataToFirestore();
+  }, []);
 
   const getHikes = async () => {
     setLoadingHikes(true);
