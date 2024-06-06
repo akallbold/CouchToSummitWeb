@@ -2,7 +2,7 @@ import React, { useState, Dispatch, SetStateAction } from 'react';
 import '../App.css';
 import useActivities from '../hooks/useActivities';
 import { ActivityObject } from 'src/utils/types';
-import { ComboboxDemo } from './shad-ui/ui/combo-box';
+import { Combobox } from './shad-ui/ui/combo-box';
 import {
   Dialog,
   DialogClose,
@@ -17,34 +17,26 @@ import { Label } from './shad-ui/ui/label';
 import { Button } from './shad-ui/ui/button';
 import { Input } from './shad-ui/ui/input';
 import { PlusCircle } from 'lucide-react';
+import useHikeAndStairData from '../hooks/useHikeAndStairData';
 
 interface NewActivityModalProps {
   activityToBeEdited?: ActivityObject;
 }
 
-const defaultObject = {
-  name: '',
-  date: '',
-  time: '',
-  id: '',
-  elevation: 0,
-  distance: 0,
-};
-
 const ActivityDialog = ({ activityToBeEdited }: NewActivityModalProps) => {
-  const [newActivity, setNewActivity] = useState<ActivityObject>(
-    activityToBeEdited || defaultObject,
+  const [activity, setActivity] = useState<ActivityObject>(
+    activityToBeEdited || null,
   );
-  const { saveNewActivity, editActivity } = useActivities();
+  const { saveActivity } = useActivities();
+  const { hikes } = useHikeAndStairData();
 
   const handleSave = () => {
     // make it so these are the same...add if new, edit if existing!
     console.log('in save');
-    if (activityToBeEdited) {
-      // editActivity({ editedActivity: newActivity });
-    } else {
-      // saveNewActivity({ newActivity });
-    }
+    saveActivity({ activity });
+  };
+  const handleOnChange = (key, value) => {
+    setActivity({ ...activity, [key]: value });
   };
 
   return (
@@ -76,15 +68,19 @@ const ActivityDialog = ({ activityToBeEdited }: NewActivityModalProps) => {
             </Label>
             <Input
               id="activityName"
-              defaultValue={activityToBeEdited?.name || ''}
+              defaultValue={activity?.activityName || ''}
+              value={activity?.activityName}
               className="col-span-3"
+              onChange={(event) =>
+                handleOnChange('activityName', event.target.value)
+              }
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="name" className="text-right">
-              Name
+              Name Fancy
             </Label>
-            <ComboboxDemo />
+            {/* <Combobox data={hikes} /> */}
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="time" className="text-right">
@@ -92,7 +88,7 @@ const ActivityDialog = ({ activityToBeEdited }: NewActivityModalProps) => {
             </Label>
             <Input
               id="time"
-              defaultValue={activityToBeEdited?.time || 60}
+              defaultValue={activityToBeEdited?.timeToComplete || 60}
               className="col-span-3"
               type="number"
             />

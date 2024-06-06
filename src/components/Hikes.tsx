@@ -12,6 +12,7 @@ import {
   Search,
   Settings,
   ShoppingCart,
+  Star,
   Users2,
 } from 'lucide-react';
 
@@ -64,7 +65,7 @@ import '../App.css';
 import useActivities from '../hooks/useActivities';
 import { ActivityObject } from 'src/utils/types';
 import ActivityDialog from './ActivityDialog';
-import useAuthentication from 'src/hooks/useAuthentication';
+import useAuth from 'src/hooks/useAuth';
 import { ResponsiveDialog } from './shad-ui/ui/responsive-dialog';
 import { ProgressCard } from './ProgressCard';
 import {
@@ -78,6 +79,7 @@ import {
 } from './shad-ui/ui/dialog';
 import { Label } from './shad-ui/ui/label';
 import Sidebar from './Sidebar';
+import useHikeAndStairData from '../hooks/useHikeAndStairData';
 
 const Hikes = () => {
   const [newActivityModalOpen, setNewActivityModalOpen] =
@@ -86,17 +88,11 @@ const Hikes = () => {
     useState<boolean>(false);
   const [selectedActivity, setSelectedActivity] =
     useState<ActivityObject | null>(null);
-  const {
-    activities,
-    saveNewActivity,
-    deleteActivity,
-    editActivity,
-    loadingActivities,
-  } = useActivities();
+  const { hikes } = useHikeAndStairData();
   const renderPaginationText = () => {
     const firstRowOnPage = 1; // for now
-    const totalOnPage = Math.min(activities.length, 10);
-    const totalResults = activities.length;
+    const totalOnPage = Math.min(hikes.length, 10);
+    const totalResults = hikes.length;
     return (
       <div className="text-xs text-muted-foreground">
         <span>
@@ -113,13 +109,13 @@ const Hikes = () => {
       </div>
     );
   };
-  const { currentUser } = useAuthentication();
+  const { currentUser } = useAuth();
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
         <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
           <Link
-            href="#"
+            to="/"
             className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
           >
             <Package2 className="h-4 w-4 transition-all group-hover:scale-110" />
@@ -129,7 +125,7 @@ const Hikes = () => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="#"
+                  to="/"
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
                   <HomeIcon className="h-5 w-5" />
@@ -143,7 +139,7 @@ const Hikes = () => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="#"
+                  to="/"
                   className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
                   <ShoppingCart className="h-5 w-5" />
@@ -157,7 +153,7 @@ const Hikes = () => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="#"
+                  to="/"
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
                   <Package className="h-5 w-5" />
@@ -171,7 +167,7 @@ const Hikes = () => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="#"
+                  to="/"
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
                   <Users2 className="h-5 w-5" />
@@ -185,7 +181,7 @@ const Hikes = () => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="#"
+                  to="/"
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
                   <LineChart className="h-5 w-5" />
@@ -201,7 +197,7 @@ const Hikes = () => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="#"
+                  to="/"
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
                   <Settings className="h-5 w-5" />
@@ -253,14 +249,6 @@ const Hikes = () => {
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
           <Tabs defaultValue="all">
             <div className="flex items-center">
-              <TabsList>
-                <TabsTrigger value="all">All</TabsTrigger>
-                <TabsTrigger value="hikes">Hikes</TabsTrigger>
-                <TabsTrigger value="stairs">Stairs</TabsTrigger>
-                <TabsTrigger value="archived" className="hidden sm:flex">
-                  Archived
-                </TabsTrigger>
-              </TabsList>
               <div className="ml-auto flex items-center gap-2">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -283,14 +271,6 @@ const Hikes = () => {
                     </DropdownMenuCheckboxItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-                <Button size="sm" variant="outline" className="h-8 gap-1">
-                  <File className="h-3.5 w-3.5" />
-                  <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                    Export
-                  </span>
-                </Button>
-
-                <ActivityDialog />
               </div>
             </div>
             <TabsContent value="all">
@@ -298,29 +278,10 @@ const Hikes = () => {
                 <CardHeader>
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between sm:flex-wrap">
                     <div>
-                      <CardTitle>Activity History</CardTitle>
+                      <CardTitle>Hikes</CardTitle>
                       <CardDescription>
-                        Track your hikes and workouts here.
+                        Hike data pulled from AllTrails.
                       </CardDescription>
-                    </div>
-                    <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-                      <ProgressCard
-                        title="Total Activities"
-                        value="1234"
-                        units="activities"
-                      />
-
-                      <ProgressCard
-                        title="Total Evelvation"
-                        value="1234"
-                        units="feet"
-                      />
-
-                      <ProgressCard
-                        title="Total Distance"
-                        value="1234"
-                        units="miles"
-                      />
                     </div>
                   </div>
                 </CardHeader>
@@ -332,45 +293,49 @@ const Hikes = () => {
                           <span className="sr-only">Image</span>
                         </TableHead>
                         <TableHead>Name</TableHead>
-                        <TableHead>Status</TableHead>
+                        <TableHead>Difficulty</TableHead>
                         <TableHead className="hidden md:table-cell">
-                          Pack Weight
+                          Elevation
                         </TableHead>
                         <TableHead className="hidden md:table-cell">
-                          Time
+                          Length
                         </TableHead>
                         <TableHead className="hidden md:table-cell">
-                          Date Completed
+                          City
                         </TableHead>
-                        <TableHead>Actions</TableHead>
+                        <TableHead className="hidden w-[100px] sm:table-cell">
+                          <span className="sr-only">Favorite</span>
+                        </TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {activities.map((activity, index) => (
+                      {hikes.map((hike, index) => (
                         <TableRow key={index}>
                           <TableCell className="hidden sm:table-cell">
                             <img
                               alt="Product image"
                               className="aspect-square rounded-md object-cover"
                               height="64"
-                              src="/placeholder.svg"
+                              src={hike.profile_photo_url}
                               width="64"
                             />
                           </TableCell>
                           <TableCell className="font-medium">
-                            {activity.name}
+                            {hike.name}
                           </TableCell>
                           <TableCell>
-                            <Badge variant="outline">Done</Badge>
+                            <Badge variant="outline">
+                              {hike.difficulty_rating}
+                            </Badge>
                           </TableCell>
                           <TableCell className="hidden md:table-cell">
-                            30 lbs
+                            {hike.elevation_gain}
                           </TableCell>
                           <TableCell className="hidden md:table-cell">
-                            25 mins
+                            {hike.length}
                           </TableCell>
                           <TableCell className="hidden md:table-cell">
-                            2023-07-12 10:42 AM
+                            {hike.city_name}
                           </TableCell>
                           <TableCell>
                             <DropdownMenu>
@@ -380,8 +345,10 @@ const Hikes = () => {
                                   size="icon"
                                   variant="ghost"
                                 >
-                                  <MoreHorizontal className="h-4 w-4" />
-                                  <span className="sr-only">Toggle menu</span>
+                                  <Star className="h-4 w-4" />
+                                  <span className="sr-only">
+                                    Add to Favorites
+                                  </span>
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">

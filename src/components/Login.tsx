@@ -1,69 +1,41 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import useAI from '../hooks/useAI';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
-  onAuthStateChanged,
-  browserSessionPersistence,
   browserLocalPersistence,
   setPersistence,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
 } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 import { auth } from '../utils/firebase';
-import useAuthentication from 'src/hooks/useAuthentication';
+import useAuth from 'src/hooks/useAuth';
 import { Alert } from './shad-ui/ui/alert';
 import { Button } from '../components/shad-ui/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '../components/shad-ui/ui/card';
 import { Input } from '../components/shad-ui/ui/input';
 import { Label } from '../components/shad-ui/ui/label';
 import { Link } from 'react-router-dom';
+import useMediaQuery from '../hooks/useMediaQuery';
 
 const Login = () => {
   const { tiredOfAI } = useAI();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { setUser, setIsAuthenticated, setLoadingAuthentication } =
-    useAuthentication();
+  const { setProviderUser, setIsAuthenticated, setLoadingAuth } = useAuth();
   const [alert, setAlert] = useState({ show: false, message: '' });
-
-  const handleSignUp = async (e) => {
-    e.preventDefault();
-    try {
-      setLoadingAuthentication(true);
-      setAlert({ show: true, message: 'Signing you up...' });
-      setPersistence(auth, browserSessionPersistence);
-      // setPersistence(auth, browserLocalPersistence)
-
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password,
-      );
-      setAlert({ show: true, message: 'Signed up successfully!' });
-      setUser(userCredential.user);
-      setIsAuthenticated(true);
-    } catch (error) {
-      console.error('Error signing up:', error.message);
-      setAlert({ show: true, message: 'Error with signup' });
-    } finally {
-      setLoadingAuthentication(false);
-    }
-  };
+  const navigate = useNavigate();
+  const isDesktop = useMediaQuery('(min-width: 768px)');
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      setLoadingAuthentication(true);
+      setLoadingAuth(true);
       setAlert({ show: true, message: 'Logging you in...' });
-
-      setPersistence(auth, browserSessionPersistence);
+      setPersistence(auth, browserLocalPersistence);
 
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -72,13 +44,123 @@ const Login = () => {
       );
       console.log('Signed in:', userCredential.user);
       setAlert({ show: true, message: 'Login successful!' });
+      setProviderUser(userCredential.user);
+      setIsAuthenticated(true);
+      navigate('/');
     } catch (error) {
       console.error('Error signing in:', error.message);
       setAlert({ show: true, message: 'Error with login' });
     } finally {
-      setLoadingAuthentication(false);
+      setLoadingAuth(false);
     }
   };
+
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    try {
+      setLoadingAuth(true);
+      setAlert({ show: true, message: 'Signing you up...' });
+      setPersistence(auth, browserLocalPersistence);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+      setAlert({ show: true, message: 'Signed up successfully!' });
+      setProviderUser(userCredential.user);
+      setIsAuthenticated(true);
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing up:', error.message);
+      setAlert({ show: true, message: 'Error with signup' });
+    } finally {
+      setLoadingAuth(false);
+    }
+  };
+
+  const handleGoogleLogin = async (e) => {
+    e.preventDefault();
+    const provider = new GoogleAuthProvider();
+    auth.useDeviceLanguage();
+    !isDesktop
+      ? handleGoogleLoginMobile(provider)
+      : handleGoogleLoginDesktop(provider);
+  };
+
+  const handleGoogleLoginDesktop = async (provider) => {
+    setLoadingAuth(true);
+    setAlert({ show: true, message: 'Logging you in...' });
+    setPersistence(auth, browserLocalPersistence);
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const token = credential.accessToken;
+      const user = result.user;
+      console.log('Signed in:', user);
+      setAlert({ show: true, message: 'Login successful!' });
+      setProviderUser(user);
+      setIsAuthenticated(true);
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing in:', error.message);
+      if (error.message === 'popup_closed_by_user') {
+        setAlert({
+          show: true,
+          message: 'Error with login popup. Please try again.',
+        });
+      }
+      if (error.message === 'redirect_cancelled_by_user') {
+        setAlert({
+          show: true,
+          message: 'Error with login redirect. Please try again.',
+        });
+      }
+      if (error.message === 'INVALID_LOGIN_CREDENTIALS') {
+        setAlert({ show: true, message: 'Invalid credentials. Try again.' });
+      }
+    } finally {
+      setLoadingAuth(false);
+    }
+  };
+
+  const handleGoogleLoginMobile = async (provider) => {
+    setLoadingAuth(true);
+    setAlert({ show: true, message: 'Logging you in...' });
+    setPersistence(auth, browserLocalPersistence);
+    try {
+      const result = await signInWithRedirect(auth, provider);
+      const redirectResult = await getRedirectResult(auth);
+      const credential =
+        GoogleAuthProvider.credentialFromResult(redirectResult);
+      const token = credential.accessToken;
+      const user = redirectResult.user;
+      console.log('Signed in:', user);
+      setAlert({ show: true, message: 'Login successful!' });
+      setProviderUser(user);
+      setIsAuthenticated(true);
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing in:', error.message);
+      if (error.message === 'popup_closed_by_user') {
+        setAlert({
+          show: true,
+          message: 'Error with login popup. Please try again.',
+        });
+      }
+      if (error.message === 'redirect_cancelled_by_user') {
+        setAlert({
+          show: true,
+          message: 'Error with login redirect. Please try again.',
+        });
+      }
+      if (error.message === 'INVALID_LOGIN_CREDENTIALS') {
+        setAlert({ show: true, message: 'Invalid credentials. Try again.' });
+      }
+    } finally {
+      setLoadingAuth(false);
+    }
+  };
+
   const handlePasswordReset = async (e) => {
     e.preventDefault();
     setAlert({ show: true, message: 'Check your email for password reset' });
@@ -88,26 +170,13 @@ const Login = () => {
         // do a toaster or something one day
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
+        console.error(error);
+        if (error.message === 'EMAIL_EXISTS') {
+          setAlert({ show: true, message: 'Email already exists.' });
+        }
         // ..
       });
   };
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      // User is signed in, see docs for a list of available properties
-      // https://firebase.google.com/docs/reference/js/auth.user
-      const uid = user.uid;
-      setUser(user);
-      setIsAuthenticated(true);
-      // ...
-    } else {
-      // User is signed out
-      // ...
-      setIsAuthenticated(false);
-    }
-  });
 
   return (
     <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
@@ -127,33 +196,52 @@ const Login = () => {
                 type="email"
                 placeholder="m@example.com"
                 required
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
               />
             </div>
             <div className="grid gap-2">
               <div className="flex items-center">
                 <Label htmlFor="password">Password</Label>
                 <Link
-                  href="/forgot-password"
+                  to="/login"
                   className="ml-auto inline-block text-sm underline"
+                  onClick={handleSignUp}
                 >
                   Forgot your password?
                 </Link>
               </div>
-              <Input id="password" type="password" required />
+              <Input
+                id="password"
+                type="password"
+                required
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+              />
             </div>
-            <Button type="submit" className="w-full">
+            <Button type="button" className="w-full" onClick={handleLogin}>
               Login
             </Button>
-            <Button variant="outline" className="w-full">
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={handleGoogleLogin}
+            >
               Login with Google
             </Button>
           </div>
+
           <div className="mt-4 text-center text-sm">
-            Don&apos;t have an account?{' '}
-            <Link href="#" className="underline">
-              Sign up
+            <Link
+              to="/login"
+              className="underline"
+              onClick={handlePasswordReset}
+            >
+              Forgot Password?
             </Link>
           </div>
+          {alert.show && <Alert>{alert.message}</Alert>}
         </div>
       </div>
       <div className="hidden bg-muted lg:block">

@@ -1,29 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import {
-  File,
-  Home as HomeIcon,
-  LineChart,
-  ListFilter,
-  MoreHorizontal,
-  Package,
-  Package2,
-  PanelLeft,
-  PlusCircle,
-  Search,
-  Settings,
-  ShoppingCart,
-  Users2,
-} from 'lucide-react';
-
+import { File, ListFilter, MoreHorizontal } from 'lucide-react';
 import { Badge } from './shad-ui/ui/badge';
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from './shad-ui/ui/breadcrumb';
 import { Button } from './shad-ui/ui/button';
 import {
   Card,
@@ -42,8 +18,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './shad-ui/ui/dropdown-menu';
-import { Input } from './shad-ui/ui/input';
-import { Sheet, SheetContent, SheetTrigger } from './shad-ui/ui/sheet';
 import {
   Table,
   TableBody,
@@ -53,50 +27,23 @@ import {
   TableRow,
 } from './shad-ui/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './shad-ui/ui/tabs';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-  TooltipProvider,
-} from './shad-ui/ui/tooltip';
-import { Link } from 'react-router-dom';
-import '../App.css';
 import useActivities from '../hooks/useActivities';
-import { ActivityObject } from 'src/utils/types';
 import ActivityDialog from './ActivityDialog';
-import useAuthentication from 'src/hooks/useAuthentication';
-import { ResponsiveDialog } from './shad-ui/ui/responsive-dialog';
+import useAuth from 'src/hooks/useAuth';
 import { ProgressCard } from './ProgressCard';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from './shad-ui/ui/dialog';
-import { Label } from './shad-ui/ui/label';
 import Sidebar from './Sidebar';
-import MobileSidebar from './MobileSidebar';
-const Home = () => {
-  const [newActivityModalOpen, setNewActivityModalOpen] =
-    useState<boolean>(false);
-  const [editActivityModalOpen, setEditActivityModalOpen] =
-    useState<boolean>(false);
-  const [selectedActivity, setSelectedActivity] =
-    useState<ActivityObject | null>(null);
-  const {
-    activities,
-    saveNewActivity,
-    deleteActivity,
-    editActivity,
-    loadingActivities,
-  } = useActivities();
+import MainHeader from './MainHeader';
+import '../App.css';
+
+const Journey = () => {
+  const { activities, totalProgress } = useActivities();
+  const { appUser } = useAuth();
+
   const renderPaginationText = () => {
-    const firstRowOnPage = 1; // for now
+    const firstRowOnPage = activities.length ? 1 : 0; // for now
     const totalOnPage = Math.min(activities.length, 10);
     const totalResults = activities.length;
+
     return (
       <div className="text-xs text-muted-foreground">
         <span>
@@ -113,48 +60,13 @@ const Home = () => {
       </div>
     );
   };
-  const { currentUser } = useAuthentication();
+
+  console.log({ appUser });
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <Sidebar />
-
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-        <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-          <MobileSidebar />
-          <div className="relative ml-auto flex-1 md:grow-0">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search..."
-              className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
-            />
-          </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                size="icon"
-                className="overflow-hidden rounded-full"
-              >
-                <img
-                  src="/placeholder-user.jpg"
-                  width={36}
-                  height={36}
-                  alt="Avatar"
-                  className="overflow-hidden rounded-full"
-                />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Feedback</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </header>
+        <MainHeader />
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
           <Tabs defaultValue="all">
             <div className="flex items-center">
@@ -203,27 +115,28 @@ const Home = () => {
                 <CardHeader>
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between sm:flex-wrap">
                     <div>
-                      <CardTitle>Activity History</CardTitle>
+                      <CardTitle>Game Plan</CardTitle>
                       <CardDescription>
-                        Track your hikes and workouts here.
+                        This is where we track your plan to help you get fit for
+                        summiting!
                       </CardDescription>
                     </div>
                     <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
                       <ProgressCard
                         title="Total Activities"
-                        value="1234"
+                        value={totalProgress?.totalActivities || 0}
                         units="activities"
                       />
 
                       <ProgressCard
-                        title="Total Evelvation"
-                        value="1234"
+                        title="Total Elevation"
+                        value={totalProgress?.totalElevation || 0}
                         units="feet"
                       />
 
                       <ProgressCard
                         title="Total Distance"
-                        value="1234"
+                        value={totalProgress?.totalDistance || 0}
                         units="miles"
                       />
                     </div>
@@ -263,19 +176,21 @@ const Home = () => {
                             />
                           </TableCell>
                           <TableCell className="font-medium">
-                            {activity.name}
+                            {activity.activityName}
                           </TableCell>
                           <TableCell>
-                            <Badge variant="outline">Done</Badge>
+                            <Badge variant="outline">
+                              {activity.difficultyRating || 'Done'}
+                            </Badge>
                           </TableCell>
                           <TableCell className="hidden md:table-cell">
-                            30 lbs
+                            {activity.packWeight || 'Not Availble'}
                           </TableCell>
                           <TableCell className="hidden md:table-cell">
-                            25 mins
+                            {activity.timeToComplete || 'Not Availble'}
                           </TableCell>
                           <TableCell className="hidden md:table-cell">
-                            2023-07-12 10:42 AM
+                            {activity.dateClimbed || 'Not Availble'}
                           </TableCell>
                           <TableCell>
                             <DropdownMenu>
@@ -310,4 +225,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Journey;

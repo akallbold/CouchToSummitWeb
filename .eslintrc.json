@@ -21,7 +21,8 @@
     "prettier/prettier": "error",
     "react/prop-types": "warn",
     "react/no-unescaped-entities": "off",
-    "react/jsx-key": "warn"
+    "react/jsx-key": "warn",
+    "no-empty-interface": "off"
   },
   "settings": {
     "react": {

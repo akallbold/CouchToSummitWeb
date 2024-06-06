@@ -15,14 +15,14 @@ import {
   limit,
 } from 'firebase/firestore';
 import { db } from 'src/utils/firebase';
-import useAuthentication from './useAuthentication';
+import useAuth from './useAuth';
 import { idGenerator } from '../utils/utils';
 
 const useActivities = () => {
   const [activities, setActivities] = useState<ActivityObject[]>([]);
   const [totalProgress, setTotalProgress] = useState<ProgressObject>(null);
   const [loadingActivities, setLoadingActivities] = useState<boolean>(false);
-  const { user } = useAuthentication();
+  const { appUser } = useAuth();
   // upsert - create if new, edit if existing
   useEffect(() => {
     if (activities.length) {
@@ -37,25 +37,41 @@ const useActivities = () => {
         totalElevation,
         totalDistance,
       });
+    } else {
+      setTotalProgress({
+        totalActivities: 0,
+        totalElevation: 0,
+        totalDistance: 0,
+      });
     }
   }, [activities]);
 
-  const saveNewActivity = async ({ newActivity }) => {
+  const saveActivity = async ({ activity }) => {
     setLoadingActivities(true);
-    // check for existing ID
-    const activityId = idGenerator('activity');
-    const { name, date, time } = newActivity;
+    const activityId = activity.id || idGenerator('activity');
+    const {
+      activityName,
+      dateClimbed,
+      timeToComplete,
+      allTrailsId,
+      packWeight,
+      elevation,
+      distance,
+    } = activity;
 
-    console.log({ activityId, name, date, time, user });
     try {
       const res = await setDoc(doc(db, 'activities', activityId), {
-        name,
-        time,
-        date,
+        activityName,
+        allTrailsId,
         createdAt: Timestamp.now(),
-        // user: '12345',
-        user: user.email,
+        dateClimbed,
         deletedAt: null,
+        distance,
+        elevation,
+        packWeight,
+        timeToComplete,
+        type: 'hike',
+        user: user.email,
       });
       console.log({ res });
       getActivities();
@@ -73,27 +89,12 @@ const useActivities = () => {
     });
     setLoadingActivities(false);
   };
-  // do we want this or just addEdit?
-  const editActivity = async ({ editedActivity }) => {
-    setLoadingActivities(true);
-    const editedActivityRef = doc(db, 'activities', editedActivity.id);
-    // add the edited timestamp!
-    //  const docRef = doc(db, 'objects', 'some-id');
-    // Update the timestamp field with the value from the server
-    // const updateTimestamp = await updateDoc(docRef, {
-    //   timestamp: serverTimestamp()
-    // });
-    //     await updateDoc(editedActivityRef, {
-    //       capital: true
-    //     });
-    setLoadingActivities(false);
-  };
 
   const getActivities = async () => {
     setLoadingActivities(true);
 
     const q = query(
-      collection(db, 'activities'),
+      collection(db, 'activity'),
       where('deletedAt', '==', null),
       where('user', '==', 'a.kallenbornbolden@gmail.com'),
       orderBy('createdAt', 'desc'),
@@ -125,9 +126,9 @@ const useActivities = () => {
   return {
     activities,
     loadingActivities,
-    saveNewActivity,
+    saveActivity,
     deleteActivity,
-    editActivity,
+    totalProgress,
   };
 };
 

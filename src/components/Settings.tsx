@@ -28,38 +28,38 @@ export function Settings() {
       <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
         <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
           <Link
-            href="#"
+            to="/"
             className="flex items-center gap-2 text-lg font-semibold md:text-base"
           >
             <Package2 className="h-6 w-6" />
             <span className="sr-only">Acme Inc</span>
           </Link>
           <Link
-            href="#"
+            to="/"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
             Dashboard
           </Link>
           <Link
-            href="#"
+            to="/"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
             Orders
           </Link>
           <Link
-            href="#"
+            to="/"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
             Products
           </Link>
           <Link
-            href="#"
+            to="/"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
             Customers
           </Link>
           <Link
-            href="#"
+            to="/"
             className="text-foreground transition-colors hover:text-foreground"
           >
             Settings
@@ -79,37 +79,37 @@ export function Settings() {
           <SheetContent side="left">
             <nav className="grid gap-6 text-lg font-medium">
               <Link
-                href="#"
+                to="/"
                 className="flex items-center gap-2 text-lg font-semibold"
               >
                 <Package2 className="h-6 w-6" />
                 <span className="sr-only">Acme Inc</span>
               </Link>
               <Link
-                href="#"
+                to="/"
                 className="text-muted-foreground hover:text-foreground"
               >
                 Dashboard
               </Link>
               <Link
-                href="#"
+                to="/"
                 className="text-muted-foreground hover:text-foreground"
               >
                 Orders
               </Link>
               <Link
-                href="#"
+                to="/"
                 className="text-muted-foreground hover:text-foreground"
               >
                 Products
               </Link>
               <Link
-                href="#"
+                to="/"
                 className="text-muted-foreground hover:text-foreground"
               >
                 Customers
               </Link>
-              <Link href="#" className="hover:text-foreground">
+              <Link to="/" className="hover:text-foreground">
                 Settings
               </Link>
             </nav>
@@ -153,14 +153,14 @@ export function Settings() {
             className="grid gap-4 text-sm text-muted-foreground"
             // x-chunk="dashboard-04-chunk-0"
           >
-            <Link href="#" className="font-semibold text-primary">
+            <Link to="/" className="font-semibold text-primary">
               General
             </Link>
-            <Link href="#">Security</Link>
-            <Link href="#">Integrations</Link>
-            <Link href="#">Support</Link>
-            <Link href="#">Organizations</Link>
-            <Link href="#">Advanced</Link>
+            <Link to="/">Security</Link>
+            <Link to="/">Integrations</Link>
+            <Link to="/">Support</Link>
+            <Link to="/">Organizations</Link>
+            <Link to="/">Advanced</Link>
           </nav>
           <div className="grid gap-6">
             <Card
