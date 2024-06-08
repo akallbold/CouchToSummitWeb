@@ -25,7 +25,7 @@ const Login = () => {
   const { tiredOfAI } = useAI();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { setProviderUser, setIsAuthenticated, setLoadingAuth } = useAuth();
+  const { setIsAuthenticated, setLoadingAuth } = useAuth();
   const [alert, setAlert] = useState({ show: false, message: '' });
   const navigate = useNavigate();
   const isDesktop = useMediaQuery('(min-width: 768px)');
@@ -44,12 +44,21 @@ const Login = () => {
       );
       console.log('Signed in:', userCredential.user);
       setAlert({ show: true, message: 'Login successful!' });
-      setProviderUser(userCredential.user);
       setIsAuthenticated(true);
       navigate('/');
     } catch (error) {
       console.error('Error signing in:', error.message);
-      setAlert({ show: true, message: 'Error with login' });
+      if (error.message === 'INVALID_LOGIN_CREDENTIALS') {
+        setAlert({
+          show: true,
+          message: 'Try again with a different email or password.',
+        });
+      } else {
+        setAlert({
+          show: true,
+          message: error.message,
+        });
+      }
     } finally {
       setLoadingAuth(false);
     }
@@ -67,7 +76,6 @@ const Login = () => {
         password,
       );
       setAlert({ show: true, message: 'Signed up successfully!' });
-      setProviderUser(userCredential.user);
       setIsAuthenticated(true);
       navigate('/');
     } catch (error) {
@@ -98,7 +106,6 @@ const Login = () => {
       const user = result.user;
       console.log('Signed in:', user);
       setAlert({ show: true, message: 'Login successful!' });
-      setProviderUser(user);
       setIsAuthenticated(true);
       navigate('/');
     } catch (error) {
@@ -136,7 +143,6 @@ const Login = () => {
       const user = redirectResult.user;
       console.log('Signed in:', user);
       setAlert({ show: true, message: 'Login successful!' });
-      setProviderUser(user);
       setIsAuthenticated(true);
       navigate('/');
     } catch (error) {

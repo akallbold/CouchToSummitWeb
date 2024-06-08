@@ -82,8 +82,8 @@ const useHikeAndStairData = () => {
   };
   useEffect(() => {
     // only do this once to seed db.
-    uploadStairDataToFirestore();
-    uploadHikeDataToFirestore();
+    // uploadStairDataToFirestore();
+    // uploadHikeDataToFirestore();
   }, []);
 
   const getHikes = async () => {
@@ -105,7 +105,6 @@ const useHikeAndStairData = () => {
         data.push({ id: doc.id, ...doc.data() });
       });
 
-      console.log('Fetched hikes:', data);
       setHikes(data);
     } catch (e) {
       console.error('Error fetching documents:', e);
