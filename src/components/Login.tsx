@@ -20,7 +20,7 @@ import { Input } from '../components/shad-ui/ui/input';
 import { Label } from '../components/shad-ui/ui/label';
 import { Link } from 'react-router-dom';
 import useMediaQuery from '../hooks/useMediaQuery';
-
+import ronnie from '../assets/ronnie.png';
 const Login = () => {
   const { tiredOfAI } = useAI();
   const [email, setEmail] = useState('');
@@ -252,8 +252,8 @@ const Login = () => {
       </div>
       <div className="hidden bg-muted lg:block">
         <img
-          src="/placeholder.svg"
-          alt="Image"
+          src={ronnie}
+          alt="Mount Rainier"
           width="1920"
           height="1080"
           className="h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"

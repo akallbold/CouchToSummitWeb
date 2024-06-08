@@ -37,7 +37,7 @@ import MainHeader from './MainHeader';
 
 const ActivityHistory = () => {
   const { activities, totalProgress } = useActivities();
-  const { appUser } = useAuth();
+  const { appUser, isAuthenticated } = useAuth();
 
   const renderPaginationText = () => {
     const firstRowOnPage = activities.length ? 1 : 0; // for now
@@ -140,80 +140,86 @@ const ActivityHistory = () => {
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="hidden w-[100px] sm:table-cell">
-                          <span className="sr-only">Image</span>
-                        </TableHead>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead className="hidden md:table-cell">
-                          Pack Weight
-                        </TableHead>
-                        <TableHead className="hidden md:table-cell">
-                          Time
-                        </TableHead>
-                        <TableHead className="hidden md:table-cell">
-                          Date Completed
-                        </TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {activities.map((activity, index) => (
-                        <TableRow key={index}>
-                          <TableCell className="hidden sm:table-cell">
-                            <img
-                              alt="Product image"
-                              className="aspect-square rounded-md object-cover"
-                              height="64"
-                              src="/placeholder.svg"
-                              width="64"
-                            />
-                          </TableCell>
-                          <TableCell className="font-medium">
-                            {activity.activityName}
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant="outline">
-                              {activity.difficultyRating || 'Done'}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="hidden md:table-cell">
-                            {activity.packWeight || 'Not Availble'}
-                          </TableCell>
-                          <TableCell className="hidden md:table-cell">
-                            {activity.timeToComplete || 'Not Availble'}
-                          </TableCell>
-                          <TableCell className="hidden md:table-cell">
-                            {activity.dateClimbed || 'Not Availble'}
-                          </TableCell>
-                          <TableCell>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button
-                                  aria-haspopup="true"
-                                  size="icon"
-                                  variant="ghost"
-                                >
-                                  <MoreHorizontal className="h-4 w-4" />
-                                  <span className="sr-only">Toggle menu</span>
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem>Edit</DropdownMenuItem>
-                                <DropdownMenuItem>Delete</DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </TableCell>
+                {isAuthenticated ? (
+                  <CardContent>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="hidden w-[100px] sm:table-cell">
+                            <span className="sr-only">Image</span>
+                          </TableHead>
+                          <TableHead>Name</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead className="hidden md:table-cell">
+                            Pack Weight
+                          </TableHead>
+                          <TableHead className="hidden md:table-cell">
+                            Time
+                          </TableHead>
+                          <TableHead className="hidden md:table-cell">
+                            Date Completed
+                          </TableHead>
+                          <TableHead>Actions</TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </CardContent>
-                <CardFooter>{renderPaginationText()}</CardFooter>
+                      </TableHeader>
+                      <TableBody>
+                        {activities.map((activity, index) => (
+                          <TableRow key={index}>
+                            <TableCell className="hidden sm:table-cell">
+                              <img
+                                alt="Product image"
+                                className="aspect-square rounded-md object-cover"
+                                height="64"
+                                src="/placeholder.svg"
+                                width="64"
+                              />
+                            </TableCell>
+                            <TableCell className="font-medium">
+                              {activity.activityName}
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="outline">
+                                {activity.difficultyRating || 'Done'}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              {activity.packWeight || 'Not Availble'}
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              {activity.timeToComplete || 'Not Availble'}
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              {activity.dateClimbed || 'Not Availble'}
+                            </TableCell>
+                            <TableCell>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button
+                                    aria-haspopup="true"
+                                    size="icon"
+                                    variant="ghost"
+                                  >
+                                    <MoreHorizontal className="h-4 w-4" />
+                                    <span className="sr-only">Toggle menu</span>
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  <DropdownMenuItem>Edit</DropdownMenuItem>
+                                  <DropdownMenuItem>Delete</DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                ) : (
+                  <div className="flex items-center justify-center h-screen">
+                    <h3>Login to track and save your activity history</h3>
+                  </div>
+                )}
+                <CardFooter>{renderPaginationText()}</CardFooter>{' '}
               </Card>
             </TabsContent>
           </Tabs>
