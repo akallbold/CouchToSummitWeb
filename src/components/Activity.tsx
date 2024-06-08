@@ -34,11 +34,12 @@ import useAuth from 'src/hooks/useAuth';
 import { ProgressCard } from './ProgressCard';
 import Sidebar from './Sidebar';
 import MainHeader from './MainHeader';
+import { Link } from 'react-router-dom';
 
 const ActivityHistory = () => {
   const { activities, totalProgress } = useActivities();
-  const { appUser, isAuthenticated } = useAuth();
-
+  const { isAuthenticated } = useAuth();
+  console.log('ON ACTIVITY', { isAuthenticated });
   const renderPaginationText = () => {
     const firstRowOnPage = activities.length ? 1 : 0; // for now
     const totalOnPage = Math.min(activities.length, 10);
@@ -216,7 +217,15 @@ const ActivityHistory = () => {
                   </CardContent>
                 ) : (
                   <div className="flex items-center justify-center h-screen">
-                    <h3>Login to track and save your activity history</h3>
+                    <span>
+                      <Link
+                        to="/login"
+                        className="cursor-pointer underline text-blue-600 hover:text-blue-800 transition-colors"
+                      >
+                        Login
+                      </Link>{' '}
+                      to track and save your activity history
+                    </span>
                   </div>
                 )}
                 <CardFooter>{renderPaginationText()}</CardFooter>{' '}

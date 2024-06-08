@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAnalytics, isSupported } from 'firebase/analytics';
-import { enableIndexedDbPersistence, getFirestore } from 'firebase/firestore';
+import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
@@ -24,16 +24,6 @@ if (!app) {
   isSupported().then((supported) => {
     if (supported) {
       analytics = getAnalytics(app);
-    }
-  });
-  enableIndexedDbPersistence(db).catch((err) => {
-    if (err.code === 'failed-precondition') {
-      console.error('Failed to enable offline persistence:', err);
-    } else if (err.code === 'unimplemented') {
-      console.error(
-        'Offline persistence is not supported by this browser:',
-        err,
-      );
     }
   });
 }
