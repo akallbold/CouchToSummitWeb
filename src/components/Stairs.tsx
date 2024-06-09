@@ -1,6 +1,5 @@
-import { Home as HomeIcon, LineChart, ListFilter, Star } from 'lucide-react';
+import { ListFilter, Star } from 'lucide-react';
 
-import { Badge } from './shad-ui/ui/badge';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -9,7 +8,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './shad-ui/ui/dropdown-menu';
-import { Input } from './shad-ui/ui/input';
 import {
   Table,
   TableBody,
@@ -19,7 +17,6 @@ import {
   TableRow,
 } from './shad-ui/ui/table';
 import { Tabs, TabsContent } from './shad-ui/ui/tabs';
-import useAuth from 'src/hooks/useAuth';
 import useHikeAndStairData from '../hooks/useHikeAndStairData';
 import '../App.css';
 import { Button } from './shad-ui/ui/button';
@@ -56,7 +53,6 @@ const Stairs = () => {
       </div>
     );
   };
-  const { currentUser } = useAuth();
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <Sidebar />

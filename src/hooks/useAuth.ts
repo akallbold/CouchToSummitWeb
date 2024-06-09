@@ -74,6 +74,7 @@ const useAuth = () => {
         querySnapshot.forEach((doc) => {
           user = { id: doc.id, ...doc.data() };
         });
+        // setAppUser(user);
         console.log('Fetched user:', user);
       } else {
         const newUser = {
@@ -91,7 +92,8 @@ const useAuth = () => {
         const userRef = await addDoc(collection(db, 'user'), newUser);
         user = { id: userRef.id, ...newUser };
         console.log('Created new user:', user);
-        return user;
+        // setAppUser(user);
+        // return user;
       }
 
       setAppUser(user);

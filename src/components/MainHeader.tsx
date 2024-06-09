@@ -1,4 +1,4 @@
-import { Home as HomeIcon, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { signOut } from 'firebase/auth';
 
 import defaultHiker from '../assets/hiker.webp';
@@ -12,9 +12,7 @@ import {
 } from './shad-ui/ui/dropdown-menu';
 import { Input } from './shad-ui/ui/input';
 import '../App.css';
-import useActivities from '../hooks/useActivities';
 import useAuth from 'src/hooks/useAuth';
-import Sidebar from './Sidebar';
 import MobileSidebar from './MobileSidebar';
 import { Avatar, AvatarFallback, AvatarImage } from './shad-ui/ui/avatar';
 import { auth } from '../utils/firebase';

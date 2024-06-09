@@ -11,31 +11,13 @@ import {
   CommandItem,
 } from './command';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
+import { HikeObject, StairObject } from '@/src/utils/types';
 
-// const hikes = [
-//   {
-//     value: 'next.js',
-//     label: 'Next.js',
-//   },
-//   {
-//     value: 'sveltekit',
-//     label: 'SvelteKit',
-//   },
-//   {
-//     value: 'nuxt.js',
-//     label: 'Nuxt.js',
-//   },
-//   {
-//     value: 'remix',
-//     label: 'Remix',
-//   },
-//   {
-//     value: 'astro',
-//     label: 'Astro',
-//   },
-// ];
+interface ComboboxProps {
+  data: HikeObject[] | StairObject[];
+}
 
-export function Combobox({ data }) {
+export function Combobox({ data }: ComboboxProps) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState('');
   return (
@@ -48,7 +30,7 @@ export function Combobox({ data }) {
           className="w-[200px] justify-between"
         >
           {value
-            ? data.find((item) => item.id === value)?.name
+            ? data.find((item) => item.name === value)?.name
             : 'Search for item...'}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>

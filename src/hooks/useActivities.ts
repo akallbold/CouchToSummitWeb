@@ -5,8 +5,6 @@ import {
   doc,
   setDoc,
   Timestamp,
-  updateDoc,
-  serverTimestamp,
   collection,
   query,
   where,
@@ -22,7 +20,6 @@ const useActivities = () => {
   const [activities, setActivities] = useState<ActivityObject[]>([]);
   const [totalProgress, setTotalProgress] = useState<ProgressObject>(null);
   const [loadingActivities, setLoadingActivities] = useState<boolean>(false);
-  const { appUser } = useAuth();
   // upsert - create if new, edit if existing
   useEffect(() => {
     if (activities.length) {
@@ -46,7 +43,7 @@ const useActivities = () => {
     }
   }, [activities]);
 
-  const saveActivity = async ({ activity }) => {
+  const saveActivity = async (activity: ActivityObject) => {
     setLoadingActivities(true);
     const activityId = activity.id || idGenerator('activity');
     const {

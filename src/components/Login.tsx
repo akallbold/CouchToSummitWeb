@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import useAI from '../hooks/useAI';
+import { useState } from 'react';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -22,7 +21,6 @@ import { Link } from 'react-router-dom';
 import useMediaQuery from '../hooks/useMediaQuery';
 import ronnie from '../assets/ronnie.png';
 const Login = () => {
-  const { tiredOfAI } = useAI();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { setIsAuthenticated, setLoadingAuth } = useAuth();
@@ -47,8 +45,8 @@ const Login = () => {
       setIsAuthenticated(true);
       navigate('/');
     } catch (error) {
-      console.error('Error signing in:', error.message);
-      if (error.message === 'INVALID_LOGIN_CREDENTIALS') {
+      console.error('Error signing in:', (error as Error).message);
+      if ((error as Error).message === 'INVALID_LOGIN_CREDENTIALS') {
         setAlert({
           show: true,
           message: 'Try again with a different email or password.',
@@ -56,7 +54,7 @@ const Login = () => {
       } else {
         setAlert({
           show: true,
-          message: error.message,
+          message: (error as Error).message,
         });
       }
     } finally {
@@ -79,7 +77,7 @@ const Login = () => {
       setIsAuthenticated(true);
       navigate('/');
     } catch (error) {
-      console.error('Error signing up:', error.message);
+      console.error('Error signing up:', (error as Error).message);
       setAlert({ show: true, message: 'Error with signup' });
     } finally {
       setLoadingAuth(false);
@@ -102,27 +100,26 @@ const Login = () => {
     try {
       const result = await signInWithPopup(auth, provider);
       const credential = GoogleAuthProvider.credentialFromResult(result);
-      const token = credential.accessToken;
       const user = result.user;
       console.log('Signed in:', user);
       setAlert({ show: true, message: 'Login successful!' });
       setIsAuthenticated(true);
       navigate('/');
     } catch (error) {
-      console.error('Error signing in:', error.message);
-      if (error.message === 'popup_closed_by_user') {
+      console.error('Error signing in:', (error as Error).message);
+      if ((error as Error).message === 'popup_closed_by_user') {
         setAlert({
           show: true,
           message: 'Error with login popup. Please try again.',
         });
       }
-      if (error.message === 'redirect_cancelled_by_user') {
+      if ((error as Error).message === 'redirect_cancelled_by_user') {
         setAlert({
           show: true,
           message: 'Error with login redirect. Please try again.',
         });
       }
-      if (error.message === 'INVALID_LOGIN_CREDENTIALS') {
+      if ((error as Error).message === 'INVALID_LOGIN_CREDENTIALS') {
         setAlert({ show: true, message: 'Invalid credentials. Try again.' });
       }
     } finally {
@@ -135,31 +132,29 @@ const Login = () => {
     setAlert({ show: true, message: 'Logging you in...' });
     setPersistence(auth, browserLocalPersistence);
     try {
-      const result = await signInWithRedirect(auth, provider);
+      await signInWithRedirect(auth, provider);
       const redirectResult = await getRedirectResult(auth);
-      const credential =
-        GoogleAuthProvider.credentialFromResult(redirectResult);
-      const token = credential.accessToken;
-      const user = redirectResult.user;
+
+      const user = redirectResult?.user;
       console.log('Signed in:', user);
       setAlert({ show: true, message: 'Login successful!' });
       setIsAuthenticated(true);
       navigate('/');
     } catch (error) {
-      console.error('Error signing in:', error.message);
-      if (error.message === 'popup_closed_by_user') {
+      console.error('Error signing in:', (error as Error).message);
+      if ((error as Error).message === 'popup_closed_by_user') {
         setAlert({
           show: true,
           message: 'Error with login popup. Please try again.',
         });
       }
-      if (error.message === 'redirect_cancelled_by_user') {
+      if ((error as Error).message === 'redirect_cancelled_by_user') {
         setAlert({
           show: true,
           message: 'Error with login redirect. Please try again.',
         });
       }
-      if (error.message === 'INVALID_LOGIN_CREDENTIALS') {
+      if ((error as Error).message === 'INVALID_LOGIN_CREDENTIALS') {
         setAlert({ show: true, message: 'Invalid credentials. Try again.' });
       }
     } finally {
@@ -177,7 +172,7 @@ const Login = () => {
       })
       .catch((error) => {
         console.error(error);
-        if (error.message === 'EMAIL_EXISTS') {
+        if ((error as Error).message === 'EMAIL_EXISTS') {
           setAlert({ show: true, message: 'Email already exists.' });
         }
         // ..

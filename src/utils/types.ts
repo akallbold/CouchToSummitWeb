@@ -1,17 +1,26 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import dayjs from 'dayjs';
+
 export interface ActivityObject {
   activityName: string;
+  address?: string;
   allTrailsId?: string;
-  createdAt: any;
-  dateClimbed: string;
+  createdAt?: string | dayjs.Dayjs;
+  dateClimbed: string | dayjs.Dayjs;
   difficultyRating?: string;
   distance?: number;
   elevation?: number;
   id: string;
-  packWeight?: number;
+  packWeight?: string;
   stairs?: number;
   status?: string;
   timeToComplete?: string;
-  type: 'hike' | 'stair';
+  type: ActivityTypeEnum;
+}
+
+export enum ActivityTypeEnum {
+  HIKE = 'hike',
+  STAIR = 'stair',
 }
 
 export interface ProgressObject {
@@ -47,7 +56,7 @@ export interface EmailUserObject {
   phoneNumber?: string;
   photoUrl?: string;
   proactiveRefresh: any;
-  providerData: any[];
+  providerData?: any[];
   providerId: string;
   reloadListender?: any;
   reloadUserInfo: any;
@@ -99,8 +108,9 @@ export interface StairObject {
   address: string;
   elevation: number;
   id: string;
-  objectId: string;
+  name?: string;
   numberOfStairs: number;
+  objectId: string;
   Shape__Length: number;
   STAIRWAYLENGTH: number;
   STAIRWAYWIDTH: number;

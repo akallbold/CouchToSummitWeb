@@ -1,30 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import {
-  File,
-  Home as HomeIcon,
-  LineChart,
-  ListFilter,
-  MoreHorizontal,
-  Package,
-  Package2,
-  PanelLeft,
-  PlusCircle,
-  Search,
-  Settings,
-  ShoppingCart,
-  Star,
-  Users2,
-} from 'lucide-react';
+import { ListFilter, Star } from 'lucide-react';
 
 import { Badge } from './shad-ui/ui/badge';
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from './shad-ui/ui/breadcrumb';
 import { Button } from './shad-ui/ui/button';
 import {
   Card,
@@ -38,13 +14,10 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './shad-ui/ui/dropdown-menu';
-import { Input } from './shad-ui/ui/input';
-import { Sheet, SheetContent, SheetTrigger } from './shad-ui/ui/sheet';
 import {
   Table,
   TableBody,
@@ -53,42 +26,13 @@ import {
   TableHeader,
   TableRow,
 } from './shad-ui/ui/table';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './shad-ui/ui/tabs';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-  TooltipProvider,
-} from './shad-ui/ui/tooltip';
-import { Link } from 'react-router-dom';
+import { Tabs, TabsContent } from './shad-ui/ui/tabs';
 import '../App.css';
-import useActivities from '../hooks/useActivities';
-import { ActivityObject } from 'src/utils/types';
-import ActivityDialog from './ActivityDialog';
-import useAuth from 'src/hooks/useAuth';
-import { ResponsiveDialog } from './shad-ui/ui/responsive-dialog';
-import { ProgressCard } from './ProgressCard';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from './shad-ui/ui/dialog';
-import { Label } from './shad-ui/ui/label';
 import Sidebar from './Sidebar';
 import useHikeAndStairData from '../hooks/useHikeAndStairData';
 import MainHeader from './MainHeader';
 
 const Hikes = () => {
-  const [newActivityModalOpen, setNewActivityModalOpen] =
-    useState<boolean>(false);
-  const [editActivityModalOpen, setEditActivityModalOpen] =
-    useState<boolean>(false);
-  const [selectedActivity, setSelectedActivity] =
-    useState<ActivityObject | null>(null);
   const { hikes } = useHikeAndStairData();
   const renderPaginationText = () => {
     const firstRowOnPage = 1; // for now
@@ -110,7 +54,7 @@ const Hikes = () => {
       </div>
     );
   };
-  const { currentUser } = useAuth();
+
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <Sidebar />

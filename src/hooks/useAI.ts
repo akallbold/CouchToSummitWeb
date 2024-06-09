@@ -6,6 +6,7 @@ const useAI = () => {
 
   return {
     tiredOfAI,
+    setTiredOfAI,
   };
 };
 
