@@ -77,10 +77,15 @@ const useAuth = () => {
         // setAppUser(user);
         console.log('Fetched user:', user);
       } else {
+        const futureDate = new Date();
+        const futureMonth = futureDate.getMonth() + 3;
+        futureDate.setMonth(futureMonth);
+
         const newUser = {
           email: currentUser.email,
           displayName: currentUser.displayName,
           createdAt: new Date(),
+          dateOfNextClimb: futureDate,
           deletedAt: null,
           id: idGenerator('user'),
           favoriteHikes: [],

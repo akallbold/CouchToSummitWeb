@@ -1,0 +1,90 @@
+[
+  {
+    "week": 0,
+    "activities": [
+      {
+        "rank": 1,
+        "activityName": "Stairs",
+        "suggestedTimeToComplete": 30,
+        "suggestedPackWeight": 50,
+        "type": "stair"
+      },
+      {
+        "rank": 2,
+        "activityName": "Stairs",
+        "suggestedTimeToComplete": 30,
+        "suggestedPackWeight": 50,
+        "type": "stair"
+      }
+    ]
+  },
+  {
+    "week": 1,
+    "activities": [
+      {
+        "rank": 1,
+        "activityName": "Stairs",
+        "suggestedTimeToComplete": 30,
+        "suggestedPackWeight": 50,
+        "type": "stair"
+      }
+    ]
+  },
+  {
+    "week": 13,
+    "activities": [
+      {
+        "rank": 1,
+        "activityName": "Stairs",
+        "suggestedTimeToComplete": 30,
+        "suggestedPackWeight": 50,
+        "type": "stair",
+        "dateClimbed": ""
+      },
+      {
+        "rank": 2,
+        "activityName": "Rest",
+        "type": "rest",
+        "dateClimbed": ""
+      },
+      {
+        "rank": 3,
+        "activityName": "Stairs",
+        "suggestedTimeToComplete": 30,
+        "suggestedPackWeight": 50,
+        "type": "stair",
+        "dateClimbed": ""
+      },
+      {
+        "rank": 4,
+        "activityName": "Stretch",
+        "suggestedTimeToComplete": 30,
+        "suggestedPackWeight": 50,
+        "type": "stretch",
+        "dateClimbed": ""
+      },
+      {
+        "rank": 5,
+        "activityName": "Stairs",
+        "suggestedTimeToComplete": 30,
+        "suggestedPackWeight": 50,
+        "type": "stair",
+        "dateClimbed": ""
+      },
+      {
+        "rank": 6,
+        "activityName": "Hike",
+        "suggestedTimeToComplete": 30,
+        "suggestedPackWeight": 50,
+        "type": "hike",
+        "dateClimbed": ""
+      },
+      {
+        "rank": 7,
+        "activityName": "Rest",
+        "type": "rest",
+        "dateClimbed": ""
+      }
+    ]
+  }
+]

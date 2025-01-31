@@ -6,7 +6,7 @@ export interface ActivityObject {
   address?: string;
   allTrailsId?: string;
   createdAt?: string | dayjs.Dayjs;
-  dateClimbed: string | dayjs.Dayjs;
+  dateClimbed?: string | dayjs.Dayjs;
   difficultyRating?: string;
   distance?: number;
   elevation?: number;
@@ -14,13 +14,17 @@ export interface ActivityObject {
   packWeight?: string;
   stairs?: number;
   status?: string;
-  timeToComplete?: string;
+  suggestedTimeToComplete?: string;
+  suggestedPackWeight?: string;
+  actualTimeToComplete?: string;
   type: ActivityTypeEnum;
 }
 
 export enum ActivityTypeEnum {
   HIKE = 'hike',
   STAIR = 'stair',
+  REST = 'rest',
+  STRETCH = 'stretch',
 }
 
 export interface ProgressObject {
@@ -114,4 +118,12 @@ export interface StairObject {
   Shape__Length: number;
   STAIRWAYLENGTH: number;
   STAIRWAYWIDTH: number;
+}
+export interface TrainingActivity extends ActivityObject {
+  rank: number;
+}
+
+export interface TrainingSuggestion {
+  week: number;
+  activities: TrainingActivity[];
 }
